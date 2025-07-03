@@ -1,2 +1,607 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina Gallery - Premium Photography Collection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="rgba(255,255,255,0.1)" points="0,0 1000,300 1000,1000 0,700"/></svg>');
+            background-size: cover;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-button:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            padding: 6rem 0;
+            background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            color: #333;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-item .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+        }
+
+        .gallery-item:hover .overlay {
+            opacity: 1;
+        }
+
+        .overlay-content {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .overlay h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .overlay p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Tall items for variety */
+        .gallery-item.tall {
+            grid-row: span 2;
+        }
+
+        .gallery-item.wide {
+            grid-column: span 2;
+        }
+
+        /* Load More Button */
+        .load-more {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .load-more-btn {
+            padding: 1rem 3rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .load-more-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            background: #333;
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer p {
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: #667eea;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1rem;
+            }
+            
+            .gallery-item.wide {
+                grid-column: span 1;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">Lumina Gallery</div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#gallery">Gallery</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Lumina Gallery</h1>
+            <p>Capturing moments, creating memories. Explore our curated collection of stunning photography from around the world.</p>
+            <a href="#gallery" class="cta-button">Explore Gallery</a>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section" id="gallery">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Featured Collection</h2>
+                <p class="section-subtitle">Each photograph tells a unique story, captured with precision and artistic vision. Browse through our carefully curated selection of premium photography.</p>
+            </div>
+
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Gallery items will be populated by JavaScript -->
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Loading more beautiful photographs...</p>
+            </div>
+
+            <div class="load-more">
+                <button class="load-more-btn" onclick="loadMoreImages()">Load More Masterpieces</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-content">
+            <h3>Lumina Gallery</h3>
+            <p>Where art meets technology. Experience photography like never before.</p>
+            <div class="social-links">
+                <a href="#">📸</a>
+                <a href="#">🌟</a>
+                <a href="#">🎨</a>
+                <a href="#">📱</a>
+            </div>
+            <p>&copy; 2024 Lumina Gallery. All rights reserved. | Crafted with passion and precision.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Gallery data with high-quality placeholder images
+        const galleryData = [
+            {
+                id: 1,
+                title: "Mountain Sunrise",
+                description: "Golden hour magic in the Alps",
+                image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
+                class: "tall"
+            },
+            {
+                id: 2,
+                title: "Ocean Waves",
+                description: "The power of nature captured",
+                image: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800&h=400&fit=crop",
+                class: "wide"
+            },
+            {
+                id: 3,
+                title: "City Lights",
+                description: "Urban symphony at night",
+                image: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&h=600&fit=crop",
+                class: ""
+            },
+            {
+                id: 4,
+                title: "Forest Path",
+                description: "Journey into the unknown",
+                image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop",
+                class: ""
+            },
+            {
+                id: 5,
+                title: "Desert Dunes",
+                description: "Endless golden landscapes",
+                image: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&h=800&fit=crop",
+                class: "tall"
+            },
+            {
+                id: 6,
+                title: "Lavender Fields",
+                description: "Purple dreams in Provence",
+                image: "https://images.unsplash.com/photo-1499002238440-d264edd596ec?w=800&h=600&fit=crop",
+                class: ""
+            },
+            {
+                id: 7,
+                title: "Northern Lights",
+                description: "Aurora borealis dance",
+                image: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=800&h=400&fit=crop",
+                class: "wide"
+            },
+            {
+                id: 8,
+                title: "Waterfall Cascade",
+                description: "Nature's powerful beauty",
+                image: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop",
+                class: ""
+            },
+            {
+                id: 9,
+                title: "Autumn Reflection",
+                description: "Mirror lake in fall colors",
+                image: "https://images.unsplash.com/photo-1507041957456-9c397ce39c97?w=800&h=600&fit=crop",
+                class: ""
+            },
+            {
+                id: 10,
+                title: "Starry Night",
+                description: "Cosmic wonder above",
+                image: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800&h=800&fit=crop",
+                class: "tall"
+            },
+            {
+                id: 11,
+                title: "Cherry Blossoms",
+                description: "Spring's delicate beauty",
+                image: "https://images.unsplash.com/photo-1522383225653-ed111181a951?w=800&h=600&fit=crop",
+                class: ""
+            },
+            {
+                id: 12,
+                title: "Rocky Coast",
+                description: "Where land meets sea",
+                image: "https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=800&h=600&fit=crop",
+                class: ""
+            }
+        ];
+
+        let currentIndex = 0;
+        const itemsPerLoad = 6;
+
+        function createGalleryItem(item) {
+            return `
+                <div class="gallery-item ${item.class}" onclick="openLightbox('${item.image}', '${item.title}', '${item.description}')">
+                    <img src="${item.image}" alt="${item.title}" loading="lazy">
+                    <div class="overlay">
+                        <div class="overlay-content">
+                            <h3>${item.title}</h3>
+                            <p>${item.description}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadMoreImages() {
+            const loading = document.getElementById('loading');
+            const galleryGrid = document.getElementById('galleryGrid');
+            
+            loading.style.display = 'block';
+            
+            setTimeout(() => {
+                const endIndex = Math.min(currentIndex + itemsPerLoad, galleryData.length);
+                
+                for (let i = currentIndex; i < endIndex; i++) {
+                    galleryGrid.innerHTML += createGalleryItem(galleryData[i]);
+                }
+                
+                currentIndex = endIndex;
+                loading.style.display = 'none';
+                
+                // Hide load more button if all images are loaded
+                if (currentIndex >= galleryData.length) {
+                    document.querySelector('.load-more-btn').style.display = 'none';
+                }
+            }, 1000);
+        }
+
+        function openLightbox(image, title, description) {
+            // Simple lightbox effect
+            const lightbox = document.createElement('div');
+            lightbox.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+                cursor: pointer;
+            `;
+            
+            lightbox.innerHTML = `
+                <div style="max-width: 90%; max-height: 90%; text-align: center;">
+                    <img src="${image}" style="max-width: 100%; max-height: 80vh; border-radius: 10px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+                    <div style="color: white; margin-top: 20px;">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 10px;">${title}</h3>
+                        <p style="opacity: 0.8;">${description}</p>
+                    </div>
+                </div>
+            `;
+            
+            lightbox.onclick = () => document.body.removeChild(lightbox);
+            document.body.appendChild(lightbox);
+        }
+
+        // Initialize gallery
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMoreImages();
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
